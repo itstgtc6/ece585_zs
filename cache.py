@@ -8,32 +8,59 @@ writemiss = 0;
 writeback = 0; 
 swaprequest = 0; 
 swap = 0; 
+i = 0
 
-n1 = 0;		
-n2 = 0;		# maximum of 3 (value of 8)
-n3 = 0;		# maximum of 7 (value of 128)
+n_sets = 15;		
+n_ways = 3;		# maximum of 3 (value of 8)
+n_linesize = 6;		# min: 5 max: 7 (value of 128)
 
 numtrace = 3;	# number of traces or test cases
-i = 0;
 
 # Replacement policies
 replacement_policy = 0; # True LRU = 0 | 1-bit LRU = 1
 
 # Parameters
-num_sets = 2^n1;	
-num_ways = 2^n2;
-line_size = 2^n3;
+num_sets = 2**n_sets;	
+num_ways = 2**n_ways;
+line_size = 2**n_linesize; 
+
+# Checking if parameters are within certain bounds 
+if num_ways > 8:
+	print("ERROR: associativity cannot be greater than 8")
+	exit()
+
+elif line_size > 128 or line_size < 32:
+	print("ERROR: line size must be between 32 and 128")
+	exit() 
+
+# functions: getting how many bits belong in each field 
+def get_taglength(address):
+	taglength = len(address) - n_sets - n_linesize
+	print(len(address))
+	print(taglength)
+
+def get_index(address):
+	# of cache blocks per set: line_size
+	indexlength = n_sets - n_ways
+	print(indexlength)
+
+# function: reading cache
+#def read_cache(address):
+#	index = get_index(
 
 #read input trace from txt file
-trace = open("word.txt", "r");
+trace = open("word.txt", "r")
 
 while i < numtrace:
 
 	read_trace = trace.readline()
 
 	data = read_trace.split();
-	print(data[0]);
-	print(data[1]);
+	# Converting addresses to binary 
+	address =  "{0:08b}".format(int(data[1],16))
+	tag = get_taglength(address)
+	print(tag)
+	# get_index()	
 
 	if data[0] == "0":
 		print("read request");
@@ -43,5 +70,7 @@ while i < numtrace:
 
 	if data[0] == "2":
 		print("invalidation request");
-	
+		
 	i = i + 1;
+	
+
