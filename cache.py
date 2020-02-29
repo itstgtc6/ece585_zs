@@ -35,12 +35,14 @@ elif line_size > 128 or line_size < 32:
 
 # functions: getting how many bits belong in each field 
 def get_taglength(address):
+	global taglength
 	taglength = len(address) - n_sets - n_linesize
 	print(len(address))
 	print(taglength)
 
 def get_index(address):
 	# of cache blocks per set: line_size
+	global indexlength
 	indexlength = n_sets - n_ways
 	print(indexlength)
 
@@ -58,9 +60,8 @@ while i < numtrace:
 	data = read_trace.split();
 	# Converting addresses to binary 
 	address =  "{0:08b}".format(int(data[1],16))
-	tag = get_taglength(address)
-	print(tag)
-	# get_index()	
+	get_taglength(address)
+	print(taglength)	
 
 	if data[0] == "0":
 		print("read request");
